@@ -18,4 +18,13 @@ const calculateBmi = (height: number, weight: number): Result => {
   }
 };
 
-console.log(calculateBmi(Number(process.argv[2]), Number(process.argv[3])));
+const height = Number(process.argv[2]);
+const weight = Number(process.argv[3]);
+
+if (isNaN(height) || isNaN(weight) || height < 0 || weight < 0) {
+  throw new Error(
+    'Invalid parameters. height and weight must be positive integers.'
+  );
+}
+
+console.log(calculateBmi(height, weight));

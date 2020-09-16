@@ -48,8 +48,15 @@ const cmdParams = process.argv;
 const exercises = [];
 
 for (let i = 3; i < cmdParams.length; i++) {
+  if (isNaN(Number(cmdParams[i]))) {
+    throw new Error(`Provided value was not a number: ${cmdParams[i]}`);
+  }
   exercises.push(Number(cmdParams[i]));
 }
 const target = Number(cmdParams[2]);
+
+if (isNaN(target)) {
+  throw new Error(`Invalid target '${cmdParams[2]}'. Target must be a number`);
+}
 
 console.log(calculateExercises(exercises, target));
