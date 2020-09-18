@@ -1,6 +1,10 @@
 type Result = string;
 
-const calculateBmi = (height: number, weight: number): Result => {
+export const calculateBmi = (height: number, weight: number): Result => {
+  if (!height || !weight || isNaN(height) || isNaN(weight)) {
+    throw new Error('malformatted parameters');
+  }
+
   const heightInMeters = height / 100;
   const bmi = weight / (heightInMeters * heightInMeters);
 
@@ -18,13 +22,13 @@ const calculateBmi = (height: number, weight: number): Result => {
   }
 };
 
-const height = Number(process.argv[2]);
-const weight = Number(process.argv[3]);
+// const height = Number(process.argv[2]);
+// const weight = Number(process.argv[3]);
 
-if (isNaN(height) || isNaN(weight) || height < 0 || weight < 0) {
-  throw new Error(
-    'Invalid parameters. height and weight must be positive integers.'
-  );
-}
+// if (isNaN(height) || isNaN(weight) || height < 0 || weight < 0) {
+//   throw new Error(
+//     'Invalid parameters. height and weight must be positive integers.'
+//   );
+// }
 
-console.log(calculateBmi(height, weight));
+// console.log(calculateBmi(height, weight));
