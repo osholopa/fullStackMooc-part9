@@ -8,10 +8,22 @@ interface Summary {
   average: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   dailyExercises: Array<number>,
   target: number
 ): Summary => {
+  if (!dailyExercises || !target || dailyExercises.length === 0) {
+    throw new Error('parameters missing');
+  }
+  for (let i = 0; i < dailyExercises.length; i++) {
+    if (isNaN(Number(dailyExercises[i]))) {
+      throw new Error('malformatted parameters');
+    }
+  }
+  if (isNaN(Number(target))) {
+    throw new Error('malformatted parameters');
+  }
+
   const reducer = (accumulator: number, currentValue: number) =>
     accumulator + currentValue;
   const average = dailyExercises.reduce(reducer, 0) / dailyExercises.length;
@@ -43,20 +55,3 @@ const calculateExercises = (
     average: average,
   };
 };
-
-const cmdParams = process.argv;
-const exercises = [];
-
-for (let i = 3; i < cmdParams.length; i++) {
-  if (isNaN(Number(cmdParams[i]))) {
-    throw new Error(`Provided value was not a number: ${cmdParams[i]}`);
-  }
-  exercises.push(Number(cmdParams[i]));
-}
-const target = Number(cmdParams[2]);
-
-if (isNaN(target)) {
-  throw new Error(`Invalid target '${cmdParams[2]}'. Target must be a number`);
-}
-
-console.log(calculateExercises(exercises, target));
