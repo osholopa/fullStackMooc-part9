@@ -15,7 +15,10 @@ app.get('/bmi', (req, res) => {
     const response = { weight, height, bmi };
     res.send(response);
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    if (error instanceof Error) {
+      const response = { error: error.message };
+      res.status(400).send(response);
+    }
   }
 });
 
