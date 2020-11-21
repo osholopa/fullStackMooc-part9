@@ -5,7 +5,7 @@ interface PartProps {
   part: CoursePart;
 }
 
-const Part: React.FC<PartProps> = ({ part }) => {
+const Part: React.FC<PartProps> = (props) => {
   const assertNever = (value: never): never => {
     throw new Error(
       `Unhandled discriminated union member: ${JSON.stringify(value)}`
@@ -15,27 +15,27 @@ const Part: React.FC<PartProps> = ({ part }) => {
   const renderSwitch = (part: CoursePart) => {
     switch (part.name) {
       case 'Fundamentals':
-        return <p> description: {part.description}</p>;
+        return <p>{part.description}</p>;
 
       case 'Using props to pass data':
         return (
           <div>
-            <p>group project count: {part.groupProjectCount}</p>
+            <p>{part.groupProjectCount}</p>
           </div>
         );
 
       case 'Deeper type usage':
         return (
           <div>
-            <p>description: {part.description}</p>
-            <p>submission link: {part.exerciseSubmissionLink}</p>
+            <p>{part.description}</p>
+            <p>{part.exerciseSubmissionLink}</p>
           </div>
         );
 
-      case 'Moodle exam':
+        case 'Moodle exam':
         return (
           <div>
-            <p>description: {part.description}</p>
+            <p>{part.description}</p>
             <p>max hours: {part.maxHours}</p>
           </div>
         );
@@ -47,11 +47,11 @@ const Part: React.FC<PartProps> = ({ part }) => {
   };
 
   return (
-    <div style={{ marginTop: 40 }}>
+    <div style={{marginTop: 40}}>
       <p>
-        {part.name} {part.exerciseCount}
+        {props.part.name} {props.part.exerciseCount}
       </p>
-      {renderSwitch(part)}
+      {renderSwitch(props.part)}
     </div>
   );
 };
