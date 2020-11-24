@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
-import { Container, Header, Icon } from "semantic-ui-react";
+import { Container, Header, Icon, Card } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, updatePatient, setDiagnosisList } from "../state";
 import { Patient, Entry, Diagnosis } from "../types";
+
+import EntryDetails from "../components/EntryDetails";
 
 const PatientDetailsPage: React.FC = () => {
   const id = useParams<{ id: string }>().id;
@@ -61,26 +63,17 @@ const PatientDetailsPage: React.FC = () => {
                 <Icon name="mars" />
               )}
             </Header>
-            <p>date of birth: {patients[id].dateOfBirth}</p>
-            <p>ssn: {patients[id].ssn}</p>
-            <p>occupation: {patients[id].occupation}</p>
+            <p>Date of birth: {patients[id].dateOfBirth}</p>
+            <p>SSN: {patients[id].ssn}</p>
+            <p>Occupation: {patients[id].occupation}</p>
             <Header as="h2">Entries:</Header>
-            {patients[id].entries
-              ? patients[id].entries?.map((entry: Entry) => (
-                  <div key={entry.id}>
-                    <p>
-                      {entry.date} {entry.description}
-                    </p>
-                    {entry.diagnosisCodes ? (
-                      <ul>
-                        {entry.diagnosisCodes.map((code: Diagnosis["code"]) => (
-                          <li key={code}>{code} {diagnoses[code].name}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </div>
-                ))
-              : null}
+            <Card.Group>
+              {patients[id].entries?.length
+                ? patients[id].entries?.map((entry: Entry) => (
+                    <EntryDetails key={entry.id} entry={entry} />
+                  ))
+                : null}
+            </Card.Group>
           </>
         ) : null}
       </Container>
