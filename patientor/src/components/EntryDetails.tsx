@@ -8,6 +8,7 @@ import {
   OccupationalHealthcareEntry,
   HealthCheckEntry,
   HealthCheckRating,
+  EntryType
 } from "../types";
 import { useStateValue } from "../state";
 
@@ -108,11 +109,11 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
   };
 
   switch (entry.type) {
-    case "Hospital":
+    case EntryType.Hospital:
       return <HospitalEntryDetails entry={entry} />;
-    case "OccupationalHealthcare":
+    case EntryType.OccupationalHealthcare:
       return <OccupationalHealthcareEntryDetails entry={entry} />;
-    case "HealthCheck":
+    case EntryType.HealthCheck:
       return <HealthcheckEntryDetails entry={entry} />;
     default:
       return assertNever(entry);
