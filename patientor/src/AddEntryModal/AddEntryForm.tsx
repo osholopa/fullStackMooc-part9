@@ -2,18 +2,23 @@ import React from "react";
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
-import { HealthCheckEntry, EntryType } from "../types";
+import {
+  HospitalEntry,
+  HealthCheckEntry,
+  OccupationalHealthcareEntry,
+  EntryType,
+  HealthCheckRating,
+} from "../types";
 import { useStateValue } from "../state";
 
-import {
-  TextField,
-  SelectField,
-  DiagnosisSelection,
-  EntryTypeOption,
-  NumberField,
-} from "../AddPatientModal/FormField";
+import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
+import { EntryTypeOption, SelectEntryTypeField } from "./SelectEntryTypeField";
+import validate from "./validate";
 
-export type EntryFormValues = Omit<HealthCheckEntry, "id">;
+export type EntryFormValues =
+  | Omit<HospitalEntry, "id">
+  | Omit<HealthCheckEntry, "id">
+  | Omit<OccupationalHealthcareEntry, "id">;
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
@@ -22,6 +27,8 @@ interface Props {
 
 const entryTypeOptions: EntryTypeOption[] = [
   { value: EntryType.HealthCheck, label: "Health Check" },
+  { value: EntryType.Hospital, label: "Hospital" },
+  { value: EntryType.OccupationalHealthcare, label: "Occupational healthcare" },
 ];
 
 export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
@@ -34,64 +41,40 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         description: "",
         date: "",
         specialist: "",
-        healthCheckRating: 0,
+        healthCheckRating: HealthCheckRating.Healthy,
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: "",
+        },
+        discharge: {
+          date: "",
+          criteria: "",
+        },
       }}
       onSubmit={onSubmit}
-      validate={(values) => {
-        const dateRegex = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
-        const requiredError = "Field is required";
-        const formatError = "Invalid format";
-        const errors: { [field: string]: string } = {};
-        if (!values.type) {
-          errors.type = requiredError;
-        }
-        if (!values.description) {
-          errors.description = requiredError;
-        }
-        if (!values.date) {
-          errors.date = requiredError;
-        }
-        if (!dateRegex.test(values.date)) {
-          errors.date = formatError;
-        }
-        if (!values.specialist) {
-          errors.specialist = requiredError;
-        }
-        return errors;
-      }}
+      validate={validate}
     >
       {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (
           <Form className="form ui">
             <Field
-              label="Entry date"
+              label="Entry date*"
               placeholder="YYYY-MM-DD"
               name="date"
               component={TextField}
             />
             <Field
-              label="Specialist"
+              label="Specialist*"
               placeholder="Specialist"
               name="specialist"
               component={TextField}
             />
-            <SelectField
-              label="Entry type"
-              name="type"
-              options={entryTypeOptions}
-            />
             <Field
-              label="Description"
+              label="Description*"
               placeholder="Description"
               name="description"
               component={TextField}
-            />
-            <Field
-              label="healthCheckRating"
-              name="healthCheckRating"
-              component={NumberField}
-              min={0}
-              max={3}
             />
             <DiagnosisSelection
               diagnoses={Object.values(diagnoses)}
@@ -99,6 +82,12 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
               setFieldTouched={setFieldTouched}
             />
 
+            <SelectEntryTypeField
+              name="type"
+              label="Entry type"
+              options={entryTypeOptions}
+              setFieldValue={setFieldValue}
+            />
             <Grid>
               <Grid.Column floated="left" width={5}>
                 <Button type="button" onClick={onCancel} color="red">
