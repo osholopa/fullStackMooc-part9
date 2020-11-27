@@ -10,7 +10,7 @@ import {
   SelectField,
   DiagnosisSelection,
   EntryTypeOption,
-  NumberField
+  NumberField,
 } from "../AddPatientModal/FormField";
 
 export type EntryFormValues = Omit<HealthCheckEntry, "id">;
@@ -38,7 +38,9 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
       }}
       onSubmit={onSubmit}
       validate={(values) => {
+        const dateRegex = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
         const requiredError = "Field is required";
+        const formatError = "Invalid format";
         const errors: { [field: string]: string } = {};
         if (!values.type) {
           errors.type = requiredError;
@@ -48,6 +50,9 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         }
         if (!values.date) {
           errors.date = requiredError;
+        }
+        if (!dateRegex.test(values.date)) {
+          errors.date = formatError;
         }
         if (!values.specialist) {
           errors.specialist = requiredError;
